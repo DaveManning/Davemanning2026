@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aerospace Additive Manufacturing - Helical Bevel Gear</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            width: 100%;
+            height: 100vh;
+            overflow: hidden;
+            background: transparent;
+            font-family: 'Courier New', monospace;
+        }
+        
+        #canvas-container {
+            width: 100%;
+            height: 100%;
+            position: relative;
+        }
+        
+        /* Blueprint grid background */
+        #canvas-container::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(100, 150, 200, 0.1) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(100, 150, 200, 0.1) 1px, transparent 1px);
+            background-size: 20px 20px;
+            pointer-events: none;
+            z-index: 0;
+        }
+        
+        .annotation {
+            position: absolute;
+            color: #2563EB;
+            font-size: 12px;
+            font-family: 'Courier New', monospace;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 8px 12px;
+            border: 1px solid #2563EB;
+            border-radius: 4px;
+            max-width: 280px;
+            line-height: 1.4;
+        }
+        
+        .annotation.visible {
+            opacity: 1;
+        }
+        
+        .annotation::before {
+            content: '▸';
+            color: #2563EB;
+            margin-right: 6px;
+            font-weight: bold;
+        }
+        
+        #traditional-label {
+            top: 20%;
+            left: 20px;
+        }
+        
+        #am-label {
+            top: 20%;
+            right: 20px;
+            text-align: right;
+        }
+        
+        #am-label::before {
+            content: '◂';
+            margin-left: 6px;
+            margin-right: 0;
+        }
+        
+        #process-control {
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            text-align: center;
+            border-color: #10B981;
+            color: #10B981;
+        }
+        
+        #hook-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #1a1a1a;
+            font-size: 32px;
+            font-weight: bold;
+            text-align: center;
+            opacity: 0;
+            pointer-events: none;
+            text-shadow: 
+                0 0 10px rgba(255, 255, 255, 0.8),
+                2px 2px 4px rgba(0, 0, 0, 0.2);
+            transition: opacity 1s ease;
+        }
+        
+        #hook-text.visible {
+            opacity: 1;
+        }
+        
+        .certification-badge {
+            position: absolute;
+            background: rgba(16, 185, 129, 0.9);
+            color: white;
+            padding: 6px 12px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: bold;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+        
+        .certification-badge.visible {
+            opacity: 1;
+        }
+        
+        #badge-faa {
+            bottom: 80px;
+            left: 20px;
+        }
+        
+        #badge-as9100 {
+            bottom: 80px;
+            left: 120px;
+        }
+        
+        #badge-ndi {
+            bottom: 80px;
+            right: 120px;
+        }
+        
+        #badge-traceability {
+            bottom: 80px;
+            right: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div id="canvas-container"></div>
+    
+    <div id="hook-text">NOT EASIER.<br/>BETTER CONTROLLED.</div>
+    
+    <div id="traditional-label" class="annotation">
+        TRADITIONAL MANUFACTURING<br/>
+        • 3 setup operations<br/>
+        • 60% material waste<br/>
+        • 72hr supplier lead time<br/>
+        • Single-source risk
+    </div>
+    
+    <div id="am-label" class="annotation">
+        ADDITIVE MANUFACTURING<br/>
+        • Integrated features<br/>
+        • Internal cooling channels<br/>
+        • 25-50% weight reduction<br/>
+        • 18mo to positive ROI
+    </div>
+    
+    <div id="process-control" class="annotation">
+        CERTIFICATION REQUIREMENTS: Material traceability • Build parameters • Heat treatment • NDI verification
+    </div>
+    
+    <div id="badge-faa" class="certification-badge">FAA CERTIFIED</div>
+    <div id="badge-as9100" class="certification-badge">AS9100</div>
+    <div id="badge-ndi" class="certification-badge">NDI VERIFIED</div>
+    <div id="badge-traceability" class="certification-badge">TRACEABLE</div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/OBJLoader.js"></script>
+    
+    <script>
+        // Scene setup
+        const scene = new THREE.Scene();
+        
+        const container = document.getElementById('canvas-container');
+        const camera = new THREE.PerspectiveCamera(
+            45,
+            container.clientWidth / container.clientHeight,
+            0.1,
+            1000
+        );
+        camera.position.set(0, 0, 12);
+        camera.lookAt(0, 0, 0);
+        
+        const renderer = new THREE.WebGLRenderer({ 
+            antialias: true, 
+            alpha: true 
+        });
+        renderer.setSize(container.clientWidth, container.clientHeight);
+        renderer.setPixelRatio(window.devicePixelRatio);
+        container.appendChild(renderer.domElement);
+        
+        // Industrial lighting (not flashy)
+        const ambientLight = new THREE.AmbientLight(0xe0e0e0, 0.6);
+        scene.add(ambientLight);
+        
+        const keyLight = new THREE.DirectionalLight(0xffffff, 0.8);
+        keyLight.position.set(5, 5, 5);
+        scene.add(keyLight);
+        
+        const fillLight = new THREE.DirectionalLight(0xffffff, 0.3);
+        fillLight.position.set(-5, -3, -3);
+        scene.add(fillLight);
+        
+        // Gear group
+        const gearGroup = new THREE.Group();
+        scene.add(gearGroup);
+        
+        // Load helical bevel gear
+        // IMPORTANT: Replace with your hosted OBJ URL
+        const loader = new THREE.OBJLoader();
+        let gearModel = null;
+        
+        loader.load(
+            '../assets/models/helical_bevel_gear.obj',
+            function (object) {
+                gearModel = object;
+                
+                // Material - industrial metal
+                object.traverse(function (child) {
+                    if (child.isMesh) {
+                        child.material = new THREE.MeshStandardMaterial({
+                            color: 0x4a5568,
+                            metalness: 0.7,
+                            roughness: 0.4,
+                            flatShading: false
+                        });
+                    }
+                });
+                
+                // Scale to reasonable size
+                const box = new THREE.Box3().setFromObject(object);
+                const size = box.getSize(new THREE.Vector3());
+                const scale = 5 / Math.max(size.x, size.y, size.z);
+                object.scale.multiplyScalar(scale);
+                
+                // Center it
+                const center = box.getCenter(new THREE.Vector3());
+                object.position.sub(center.multiplyScalar(scale));
+                
+                gearGroup.add(object);
+            },
+            undefined,
+            function (error) {
+                console.error('Error loading gear model:', error);
+                // Create placeholder gear if model fails
+                const geometry = new THREE.TorusGeometry(2, 0.8, 16, 32);
+                const material = new THREE.MeshStandardMaterial({ 
+                    color: 0x4a5568,
+                    metalness: 0.7,
+                    roughness: 0.4
+                });
+                const placeholder = new THREE.Mesh(geometry, material);
+                gearGroup.add(placeholder);
+            }
+        );
+        
+        // Cutaway plane for AM features visualization
+        const cutawayGeometry = new THREE.PlaneGeometry(6, 6);
+        const cutawayMaterial = new THREE.MeshBasicMaterial({
+            color: 0x10B981,
+            transparent: true,
+            opacity: 0,
+            side: THREE.DoubleSide,
+            wireframe: true
+        });
+        const cutawayPlane = new THREE.Mesh(cutawayGeometry, cutawayMaterial);
+        cutawayPlane.rotation.y = Math.PI / 4;
+        gearGroup.add(cutawayPlane);
+        
+        // State management
+        let mouseX = 0;
+        let mouseY = 0;
+        let targetRotationX = 0.2;
+        let targetRotationY = 0;
+        let currentRotationX = 0.2;
+        let currentRotationY = 0;
+        let showAM = false;
+        let time = 0;
+        
+        // Mouse interaction
+        container.addEventListener('mousemove', (event) => {
+            const rect = container.getBoundingClientRect();
+            mouseX = ((event.clientX - rect.left) / rect.width) * 2 - 1;
+            mouseY = -((event.clientY - rect.top) / rect.height) * 2 + 1;
+            
+            // X-axis rotation
+            targetRotationY = mouseX * 0.8;
+            
+            // Y-axis triggers AM view
+            if (mouseY > 0.2 && !showAM) {
+                showAM = true;
+                activateAMView();
+            } else if (mouseY < -0.2 && showAM) {
+                showAM = false;
+                deactivateAMView();
+            }
+        });
+        
+        container.addEventListener('mouseleave', () => {
+            targetRotationY = 0;
+            showAM = false;
+            deactivateAMView();
+        });
+        
+        function activateAMView() {
+            // Show AM annotations
+            document.getElementById('am-label').classList.add('visible');
+            document.getElementById('process-control').classList.add('visible');
+            document.getElementById('hook-text').classList.add('visible');
+            
+            // Show certification badges
+            setTimeout(() => {
+                document.querySelectorAll('.certification-badge').forEach(badge => {
+                    badge.classList.add('visible');
+                });
+            }, 500);
+            
+            // Show cutaway
+            cutawayMaterial.opacity = 0.15;
+        }
+        
+        function deactivateAMView() {
+            // Show traditional annotations
+            document.getElementById('traditional-label').classList.add('visible');
+            document.getElementById('am-label').classList.remove('visible');
+            document.getElementById('process-control').classList.remove('visible');
+            document.getElementById('hook-text').classList.remove('visible');
+            
+            // Hide certification badges
+            document.querySelectorAll('.certification-badge').forEach(badge => {
+                badge.classList.remove('visible');
+            });
+            
+            // Hide cutaway
+            cutawayMaterial.opacity = 0;
+        }
+        
+        // Start with traditional view
+        setTimeout(() => {
+            document.getElementById('traditional-label').classList.add('visible');
+        }, 500);
+        
+        // Animation loop
+        function animate() {
+            requestAnimationFrame(animate);
+            time += 0.016;
+            
+            // Smooth rotation interpolation
+            currentRotationX += (targetRotationX - currentRotationX) * 0.05;
+            currentRotationY += (targetRotationY - currentRotationY) * 0.05;
+            
+            gearGroup.rotation.x = currentRotationX;
+            gearGroup.rotation.y = currentRotationY + time * 0.1; // Slow auto-rotation
+            
+            // Subtle floating
+            gearGroup.position.y = Math.sin(time * 0.5) * 0.05;
+            
+            // Animate cutaway plane
+            if (showAM) {
+                cutawayPlane.rotation.y = time * 0.3;
+            }
+            
+            renderer.render(scene, camera);
+        }
+        
+        animate();
+        
+        // Handle window resize
+        window.addEventListener('resize', () => {
+            const width = container.clientWidth;
+            const height = container.clientHeight;
+            camera.aspect = width / height;
+            camera.updateProjectionMatrix();
+            renderer.setSize(width, height);
+        });
+    </script>
+</body>
+</html>

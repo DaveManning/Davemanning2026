@@ -1,0 +1,166 @@
+{
+    "accessors": [
+        {
+            "bufferView": 0,
+            "componentType": 5123,
+            "count": 325194,
+            "type": "SCALAR"
+        },
+        {
+            "bufferView": 1,
+            "componentType": 5126,
+            "count": 61535,
+            "max": [
+                0.14820441246032715,
+                0.16294984817504884,
+                0.04402142524719238
+            ],
+            "min": [
+                -0.16462974548339845,
+                8.511040359735489e-06,
+                -0.058583130836486814
+            ],
+            "name": "position",
+            "type": "VEC3"
+        },
+        {
+            "bufferView": 2,
+            "componentType": 5126,
+            "count": 61535,
+            "name": "map1",
+            "type": "VEC2"
+        },
+        {
+            "bufferView": 3,
+            "componentType": 5126,
+            "count": 61535,
+            "name": "normal",
+            "type": "VEC3"
+        }
+    ],
+    "asset": {
+        "copyright": "2024 (c) Amazon.com, Inc.",
+        "generator": "encglb version 7457645ea95c2b05eee26395baf897c20674b15d (post-processed with splitglb)",
+        "version": "2.0"
+    },
+    "bufferViews": [
+        {
+            "buffer": 0,
+            "byteLength": 650388,
+            "byteOffset": 0,
+            "target": 34963
+        },
+        {
+            "buffer": 0,
+            "byteLength": 738420,
+            "byteOffset": 650388,
+            "target": 34962
+        },
+        {
+            "buffer": 0,
+            "byteLength": 492280,
+            "byteOffset": 1388808,
+            "target": 34962
+        },
+        {
+            "buffer": 0,
+            "byteLength": 738420,
+            "byteOffset": 1881088,
+            "target": 34962
+        }
+    ],
+    "buffers": [
+        {
+            "byteLength": 2619508,
+            "uri": "ASSET.bin"
+        }
+    ],
+    "extensionsUsed": [
+        "FB_ngon_encoding"
+    ],
+    "images": [
+        {
+            "uri": "normalTexture0.png"
+        },
+        {
+            "uri": "baseColorTexture1.png"
+        },
+        {
+            "uri": "metallicRoughnessTexture2.png"
+        }
+    ],
+    "materials": [
+        {
+            "doubleSided": true,
+            "name": "ASSET_MAT_MR",
+            "normalTexture": {
+                "index": 0
+            },
+            "pbrMetallicRoughness": {
+                "baseColorTexture": {
+                    "index": 1
+                },
+                "metallicRoughnessTexture": {
+                    "index": 2
+                }
+            }
+        }
+    ],
+    "meshes": [
+        {
+            "name": "mesh_43",
+            "primitives": [
+                {
+                    "attributes": {
+                        "NORMAL": 3,
+                        "POSITION": 1,
+                        "TEXCOORD_0": 2
+                    },
+                    "extensions": {
+                        "FB_ngon_encoding": {}
+                    },
+                    "indices": 0,
+                    "material": 0
+                }
+            ]
+        }
+    ],
+    "nodes": [
+        {
+            "children": [
+                1
+            ],
+            "name": "ScaleFactorRootNode"
+        },
+        {
+            "mesh": 0,
+            "name": "ASSET"
+        }
+    ],
+    "samplers": [
+        {}
+    ],
+    "scene": 0,
+    "scenes": [
+        {
+            "name": "Scene",
+            "nodes": [
+                0
+            ]
+        }
+    ],
+    "textures": [
+        {
+            "sampler": 0,
+            "source": 0
+        },
+        {
+            "sampler": 0,
+            "source": 1
+        },
+        {
+            "sampler": 0,
+            "source": 2
+        }
+    ]
+}
