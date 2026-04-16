@@ -111,7 +111,7 @@
         const screenGeometry = new THREE.PlaneGeometry(screenWidth, screenHeight);
         const screenMaterial = new THREE.ShaderMaterial({
             uniforms: {
-                texture: { value: designSystemTexture },
+                uTexture: { value: designSystemTexture },
                 scrollOffset: { value: 0.0 }
             },
             vertexShader: `
@@ -122,18 +122,18 @@
                 }
             `,
             fragmentShader: `
-                uniform sampler2D texture;
+                uniform sampler2D uTexture;
                 uniform float scrollOffset;
                 varying vec2 vUv;
-                
+
                 void main() {
                     vec2 uv = vUv;
                     uv.y = uv.y * 0.4 + scrollOffset;
-                    
+
                     if (uv.y < 0.0 || uv.y > 1.0) {
                         gl_FragColor = vec4(1.0, 1.0, 1.0, 1.0);
                     } else {
-                        gl_FragColor = texture2D(texture, uv);
+                        gl_FragColor = texture2D(uTexture, uv);
                     }
                 }
             `
