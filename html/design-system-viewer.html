@@ -45,6 +45,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     
     <script>
+(function() {
         const scene = new THREE.Scene();
         
         const container = document.getElementById('canvas-container');
@@ -227,6 +228,7 @@
             camera.updateProjectionMatrix();
             renderer.setSize(width, height);
         });
+})();
     </script>
 </body>
 </html>
