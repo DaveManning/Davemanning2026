@@ -123,6 +123,7 @@
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
     
     <script>
+(function() {
         // Scene setup
         const scene = new THREE.Scene();
         
@@ -265,6 +266,7 @@
             camera.updateProjectionMatrix();
             renderer.setSize(container.clientWidth, container.clientHeight);
         });
+})();
     </script>
 </body>
 </html>
