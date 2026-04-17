@@ -48,7 +48,7 @@
     <div id="instructions">Move mouse to control pan • Auto-scrolls when idle</div>
 
     <script>
-(function() {
+function init3DScene() {
         const scene = new THREE.Scene();
         
         const container = document.getElementById('canvas-container');
@@ -231,7 +231,19 @@
             camera.updateProjectionMatrix();
             renderer.setSize(width, height);
         });
-})();
+}
+
+const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+        if (entry.isIntersecting && !window.sceneInitialized) {
+            window.sceneInitialized = true;
+            init3DScene();
+            observer.disconnect();
+        }
+    });
+}, { threshold: 0.1 });
+
+observer.observe(document.getElementById('canvas-container'));
     </script>
 </body>
 </html>

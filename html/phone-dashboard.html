@@ -34,7 +34,7 @@
     <div id="canvas-container"></div>
 
     <script>
-(function() {
+function init3DScene() {
         // Scene setup
         const scene = new THREE.Scene();
         
@@ -186,7 +186,19 @@
             camera.updateProjectionMatrix();
             renderer.setSize(width, height);
         });
-})();
+}
+
+const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+        if (entry.isIntersecting && !window.sceneInitialized) {
+            window.sceneInitialized = true;
+            init3DScene();
+            observer.disconnect();
+        }
+    });
+}, { threshold: 0.1 });
+
+observer.observe(document.getElementById('canvas-container'));
     </script>
 </body>
 </html>
