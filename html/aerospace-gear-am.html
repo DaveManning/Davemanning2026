@@ -186,6 +186,7 @@
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/OBJLoader.js"></script>
     
     <script>
+(function() {
 function init3DScene() {
         // Scene setup
         const scene = new THREE.Scene();
@@ -405,6 +406,7 @@ const observer = new IntersectionObserver((entries) => {
 }, { threshold: 0.1 });
 
 observer.observe(document.getElementById('canvas-container'));
+})();
     </script>
 </body>
 </html>

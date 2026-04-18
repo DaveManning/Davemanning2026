@@ -48,6 +48,7 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script>
+(function() {
 function init3DScene() {
         const scene = new THREE.Scene();
         
@@ -244,6 +245,7 @@ const observer = new IntersectionObserver((entries) => {
 }, { threshold: 0.1 });
 
 observer.observe(document.getElementById('canvas-container'));
+})();
     </script>
 </body>
 </html>
